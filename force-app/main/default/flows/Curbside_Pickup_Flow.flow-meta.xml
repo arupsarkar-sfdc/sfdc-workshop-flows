@@ -22,6 +22,32 @@
         </value>
     </processMetadataValues>
     <processType>Flow</processType>
+    <recordCreates>
+        <name>Create_Activity</name>
+        <label>Create Activity</label>
+        <locationX>805</locationX>
+        <locationY>426</locationY>
+        <inputAssignments>
+            <field>Description</field>
+            <value>
+                <stringValue>Customer is driving in to pick up order</stringValue>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>OwnerId</field>
+            <value>
+                <elementReference>Get_Orders.CompanyAuthorizedBy.Id</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Priority</field>
+            <value>
+                <stringValue>Normal</stringValue>
+            </value>
+        </inputAssignments>
+        <object>Task</object>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </recordCreates>
     <recordLookups>
         <name>Get_Orders</name>
         <label>Get Orders</label>
@@ -60,6 +86,9 @@
         <label>Update Order</label>
         <locationX>666</locationX>
         <locationY>427</locationY>
+        <connector>
+            <targetReference>Create_Activity</targetReference>
+        </connector>
         <filterLogic>and</filterLogic>
         <filters>
             <field>Id</field>
@@ -85,8 +114,8 @@
     <screens>
         <name>Order_Availability</name>
         <label>Order Availability</label>
-        <locationX>495</locationX>
-        <locationY>251</locationY>
+        <locationX>496</locationX>
+        <locationY>255</locationY>
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>true</allowPause>
@@ -130,8 +159,8 @@
     <screens>
         <name>Order_is_available</name>
         <label>Order is available</label>
-        <locationX>667</locationX>
-        <locationY>253</locationY>
+        <locationX>677</locationX>
+        <locationY>255</locationY>
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>true</allowPause>
