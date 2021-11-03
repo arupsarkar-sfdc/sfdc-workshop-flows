@@ -25,24 +25,54 @@
     <recordCreates>
         <name>Create_Activity</name>
         <label>Create Activity</label>
-        <locationX>805</locationX>
+        <locationX>443</locationX>
         <locationY>426</locationY>
+        <inputAssignments>
+            <field>ActivityDate</field>
+            <value>
+                <elementReference>$Flow.CurrentDate</elementReference>
+            </value>
+        </inputAssignments>
         <inputAssignments>
             <field>Description</field>
             <value>
-                <stringValue>Customer is driving in to pick up order</stringValue>
+                <stringValue>{!Get_Orders.CustomerAuthorizedById} is waiting for order to be picked up at spot #5. Please greet him upon arrival.</stringValue>
             </value>
         </inputAssignments>
         <inputAssignments>
             <field>OwnerId</field>
             <value>
-                <elementReference>Get_Orders.CompanyAuthorizedBy.Id</elementReference>
+                <elementReference>Get_Orders.CompanyAuthorizedById</elementReference>
             </value>
         </inputAssignments>
         <inputAssignments>
             <field>Priority</field>
             <value>
                 <stringValue>Normal</stringValue>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Status</field>
+            <value>
+                <stringValue>In Progress</stringValue>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Subject</field>
+            <value>
+                <stringValue>Customer Order Pickup</stringValue>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>WhatId</field>
+            <value>
+                <elementReference>Get_Orders.AccountId</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>WhoId</field>
+            <value>
+                <elementReference>Get_Orders.CustomerAuthorizedBy.Id</elementReference>
             </value>
         </inputAssignments>
         <object>Task</object>
@@ -59,26 +89,19 @@
         </connector>
         <filterLogic>and</filterLogic>
         <filters>
-            <field>CustomerAuthorizedById</field>
-            <operator>IsNull</operator>
+            <field>Id</field>
+            <operator>EqualTo</operator>
             <value>
-                <booleanValue>false</booleanValue>
-            </value>
-        </filters>
-        <filters>
-            <field>CompanyAuthorizedById</field>
-            <operator>IsNull</operator>
-            <value>
-                <booleanValue>false</booleanValue>
+                <elementReference>recordId</elementReference>
             </value>
         </filters>
         <getFirstRecordOnly>true</getFirstRecordOnly>
         <object>Order</object>
         <queriedFields>Id</queriedFields>
-        <queriedFields>Name</queriedFields>
         <queriedFields>OrderNumber</queriedFields>
         <queriedFields>CompanyAuthorizedById</queriedFields>
         <queriedFields>CustomerAuthorizedById</queriedFields>
+        <queriedFields>AccountId</queriedFields>
         <storeOutputAutomatically>true</storeOutputAutomatically>
     </recordLookups>
     <recordUpdates>
@@ -94,7 +117,7 @@
             <field>Id</field>
             <operator>EqualTo</operator>
             <value>
-                <elementReference>Get_Orders.Id</elementReference>
+                <elementReference>recordId</elementReference>
             </value>
         </filters>
         <inputAssignments>
@@ -114,8 +137,8 @@
     <screens>
         <name>Order_Availability</name>
         <label>Order Availability</label>
-        <locationX>496</locationX>
-        <locationY>255</locationY>
+        <locationX>495</locationX>
+        <locationY>251</locationY>
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>true</allowPause>
@@ -150,7 +173,7 @@
         </fields>
         <fields>
             <name>Items</name>
-            <fieldText>&lt;p&gt;&lt;b&gt;Order Name: &lt;/b&gt;{!Get_Orders.Name}&lt;/p&gt;&lt;p&gt;&lt;b&gt;Order Number : &lt;/b&gt;{!Get_Orders.OrderNumber}&lt;/p&gt;</fieldText>
+            <fieldText>&lt;p&gt;&lt;b&gt;Account:{!Get_Orders.AccountId}&lt;/b&gt;&lt;/p&gt;&lt;p&gt;&lt;b&gt;Order Number : &lt;/b&gt;{!Get_Orders.OrderNumber}&lt;/p&gt;</fieldText>
             <fieldType>DisplayText</fieldType>
         </fields>
         <showFooter>true</showFooter>
@@ -159,8 +182,8 @@
     <screens>
         <name>Order_is_available</name>
         <label>Order is available</label>
-        <locationX>677</locationX>
-        <locationY>255</locationY>
+        <locationX>667</locationX>
+        <locationY>253</locationY>
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>true</allowPause>
@@ -169,7 +192,7 @@
         </connector>
         <fields>
             <name>OrderAvailableNotice</name>
-            <fieldText>&lt;p&gt;Good News !!! Your order is ready for pick up. It will be available at pickup spot # 5.&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;When you arrive please contact {!Get_Orders.CompanyAuthorizedBy.Name}&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;Thank you,&lt;/p&gt;</fieldText>
+            <fieldText>&lt;p&gt;Good News !!! Your order is ready for pick up. It will be available at pickup spot # 5.&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;Store associate is notified. They will be at spot # 5.&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;Thank you,&lt;/p&gt;</fieldText>
             <fieldType>DisplayText</fieldType>
         </fields>
         <showFooter>true</showFooter>
@@ -182,7 +205,7 @@
             <targetReference>Get_Orders</targetReference>
         </connector>
     </start>
-    <status>Draft</status>
+    <status>Active</status>
     <variables>
         <name>orderRecords</name>
         <dataType>SObject</dataType>
@@ -190,5 +213,12 @@
         <isInput>true</isInput>
         <isOutput>true</isOutput>
         <objectType>Order</objectType>
+    </variables>
+    <variables>
+        <name>recordId</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>true</isInput>
+        <isOutput>true</isOutput>
     </variables>
 </Flow>
